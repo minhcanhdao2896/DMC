@@ -1,0 +1,172 @@
+#include "stdio.h"
+#include "conio.h"
+#include "time.h"
+
+char create(int min, int max)
+{
+	return min + rand() % (max + 1 - min);
+}
+void swap(char *x, char *y)
+{
+	char t;
+	t = *x;
+	*x = *y;
+	*y = t;
+}
+void createRandomNumber(char num[4])
+{
+	int k;
+	char number[10] = "1234567890";
+	printf("\nTarget number is:");
+	for (int h = 0; h < 4; h++)
+	{
+		k = create(0, 9 - h);
+		num[h] = number[k];
+		swap(&number[k], &number[9 - h]);
+		printf("%c", num[h]);
+	}
+
+	printf("\n");
+}
+int isValidNumber(char num[4])
+{
+	for (int k = 0; k < 4; k++)
+	{
+		if (num[k] > '9' || num[k] < '0')
+		{
+			printf("Number is not valid\n");
+			return 0;
+		}
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = i + 1; j < 4; j++)
+		{
+			if (num[i] == num[j])
+			{
+				printf("Digit have same number\n");
+				return 0;
+			}
+		}
+	}
+	return 1;
+}
+int isMatch(char target[4], char num[4])
+{
+	int hit = 0, blow = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			if (target[i] == num[j])
+			{
+				if (i == j)
+				{
+					++hit;
+				}
+				else ++blow;
+
+			}
+		}
+	}
+	if (hit == 4)
+	{
+		return 1;
+	}
+	else
+	{
+		printf("\nHit: %d \t Blow: %d", hit, blow);
+		return 0;
+	}
+
+}
+
+
+/*void createRandomNumber1(char num[4])
+{
+	printf("\nTarget number is:");
+	for (int k = 0; k < MAX_NUMBER; k++)
+	{
+		num[k] = rand() % 10;
+	}
+
+
+	for (int i = 0; i < MAX_NUMBER; i++)
+	{
+		for (int j = 0; j < MAX_NUMBER; j++)
+		{
+			if (num[i] == num[j] && i != j)
+			{
+				num[j] = rand() % 10;
+			}
+		}
+	}
+	for (int h = 0; h < MAX_NUMBER; h++)
+	{
+		printf("%d", num[h]);
+	}
+	printf("\n");
+}*/
+
+int main()
+{
+	char guess_number[4], target_number[4];
+	char c[1];
+	int result = 0;
+	do
+	{
+		system("cls");
+		srand((int)time(0));
+		createRandomNumber(target_number);
+
+		printf("Press the guess number: ");
+		/*for (int i = 1; i <= max_number; i++)
+		{
+			scanf_s("%d",&guess_number[i]);
+		}
+		printf("guess number is:");
+		for (int i = 1; i <= max_number; i++)
+		{
+			printf("%d", guess_number[i]);
+		}*/
+		fflush(stdin);
+		gets(guess_number);
+		puts(guess_number);
+		printf("\n");
+
+		//isValidNumber(guess_number);
+		while (!isValidNumber(guess_number))
+		{
+			printf("\nPress the guess number: ");
+			fflush(stdin);
+			gets(guess_number);
+		}
+
+		result = isMatch(target_number, guess_number);
+		while (!result)
+		{
+			printf("\nPress the guess number: ");
+			fflush(stdin);
+			gets(guess_number);
+			while (!isValidNumber(guess_number))
+			{
+				printf("\nPress the guess number: ");
+				fflush(stdin);
+				gets(guess_number);
+			}
+			result = isMatch(target_number, guess_number);
+		}
+		printf("     ****WIN****      \n");
+		printf("----CONGRATULATION----\n");
+		printf("You want play game again(y / n) \n");
+		gets(c);
+		while (c[0] != 'y' && c[0] != 'n')
+		{
+			printf("\nPress y to continue, press n to exit game\n");
+		}
+	} while (c[0] == 'y');
+
+	getchar();
+	return 0;
+}
